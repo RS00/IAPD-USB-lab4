@@ -26,7 +26,8 @@ void USBEnumerator::getVolumeAndLetter(PSP_DEVICE_INTERFACE_DETAIL_DATA_A pDevic
 			if (GetVolumePathNamesForVolumeNameA(volume, letter, 255, &requiredLength))
 			{
 				string path(pDeviceInterfaceDetailData->DevicePath), symbPath(letter);
-				USBDevice device(wstring(path.begin(), path.end()), wstring(symbPath.begin(), symbPath.end()));
+				wstring nameOfDevice = getNameOfVolume(volume);
+				USBDevice device(nameOfDevice, wstring(path.begin(), path.end()), wstring(symbPath.begin(), symbPath.end()));
 				vectorOfDevices.push_back(device);
 			}
 		}
@@ -80,4 +81,18 @@ vector<USBDevice> USBEnumerator::getVectorOfDevices()
 		pDeviceInterfaceDetailData = NULL;
 	}
 	return vectorOfDevices;
+}
+
+wstring USBEnumerator::getNameOfVolume(string volName)
+{
+	char nameBuffer[BUFFER_SIZE];
+	char sysNameBuffer[BUFFER_SIZE];
+	DWORD number;
+	DWORD length;
+	DWORD fileSF;
+
+	while (!GetVolumeInformationA(volName.c_str(), nameBuffer, sizeof(nameBuffer),
+		&number, &length, &fileSF, sysNameBuffer, sizeof(sysNameBuffer)));
+	string name(nameBuffer);
+	return wstring(name.begin(), name.end());
 }
