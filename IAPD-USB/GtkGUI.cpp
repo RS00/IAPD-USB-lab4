@@ -1,5 +1,6 @@
 #include "GtkGUI.h"
 
+WNDPROC GtkGUI::OldWinProc = NULL;
 
 GtkGUI::GtkGUI()
 {
@@ -26,6 +27,10 @@ void GtkGUI::activate(GtkApplication* app, gpointer user_data)
 	GtkWidget *tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(treeStore));
 
 	window = gtk_application_window_new(app);
+	
+	
+
+
 	gtk_container_add(GTK_CONTAINER(window), tree);
 
 
@@ -62,6 +67,8 @@ void GtkGUI::activate(GtkApplication* app, gpointer user_data)
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column4);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column5);
 	gtk_widget_show_all(window);
+	HWND hWnd = getHwndFromWindow(window);
+	changeWndProc(hWnd);
 }
 
 
@@ -87,4 +94,33 @@ void GtkGUI::setWidgetProps(GtkWidget *w, GtkTreeViewColumn *c1, GtkTreeViewColu
 	g_object_set(c4, "resizable", TRUE);
 	g_object_set(c5, "min-width", TREE_BUSY);
 	g_object_set(c5, "resizable", TRUE);
+}
+
+void GtkGUI::changeWndProc(HWND hWnd)
+{
+	OldWinProc = (WNDPROC)GetWindowLong(hWnd, GWL_WNDPROC);
+	SetWindowLong(hWnd, GWL_WNDPROC, (LONG)(WNDPROC)MyWinProc);
+}
+
+
+LONG CALLBACK GtkGUI::MyWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+		case WM_DEVICECHANGE:
+		{
+			;
+		}
+
+	default:
+		return CallWindowProc((WNDPROC)OldWinProc, hWnd, msg, wParam, lParam);
+	}
+
+	return TRUE;
+}
+
+HWND GtkGUI::getHwndFromWindow(GtkWidget *w)
+{
+	GdkWindow *window = gtk_widget_get_window(w);
+	return reinterpret_cast<HWND>(GDK_WINDOW_HWND(window));
 }

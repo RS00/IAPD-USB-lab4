@@ -1,5 +1,7 @@
 #pragma once
 #include <gtk\gtk.h>
+#include <gdk\gdkwin32.h>
+#include <Windows.h>
 #define MAIN_WINDOW_TITLE "USB Info"
 #define MAIN_WINDOW_HEIGHT 300
 #define MAIN_WINDOWS_WIDTH 550
@@ -27,11 +29,15 @@ enum
 class GtkGUI
 {
 private:
+	static WNDPROC OldWinProc;
 	GtkApplication *app;
 	GtkWidget *tree;
 	GtkTreeStore *treeStore;
 	static void activate(GtkApplication* app, gpointer user_data);
 	static void setWidgetProps(GtkWidget *w, GtkTreeViewColumn *c1, GtkTreeViewColumn *c2, GtkTreeViewColumn *c3, GtkTreeViewColumn *c4, GtkTreeViewColumn *c5);
+	static void changeWndProc(HWND hWnd);
+	static LONG CALLBACK MyWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	static HWND GtkGUI::getHwndFromWindow(GtkWidget *w);
 public:
 	GtkGUI();
 	int startApp(int argc, char *argv[]);
