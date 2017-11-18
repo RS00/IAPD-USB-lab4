@@ -18,19 +18,19 @@ GtkGUI::~GtkGUI()
 void GtkGUI::activate(GtkApplication* app, gpointer user_data)
 {
 	GtkWidget *window;
+	GtkTreeIter   iter;
+	USBEnumerator enumerator;
 	GtkTreeStore *treeStore = gtk_tree_store_new(N_COLUMNS,
 		G_TYPE_STRING,
 		G_TYPE_STRING,
 		G_TYPE_INT64,
 		G_TYPE_INT64,
 		G_TYPE_INT64);
+
+	refreshTreeStore(treeStore);
 	GtkWidget *tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(treeStore));
 
 	window = gtk_application_window_new(app);
-	
-	
-
-
 	gtk_container_add(GTK_CONTAINER(window), tree);
 
 
@@ -38,26 +38,24 @@ void GtkGUI::activate(GtkApplication* app, gpointer user_data)
 	* reference */
 	g_object_unref(G_OBJECT(treeStore));
 
-	/* Create a cell render and arbitrarily make it red for demonstration
-	* purposes */
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 
 	/* Create a column, associating the "text" attribute of the
 	* cell_renderer to the first column of the model */
 	GtkTreeViewColumn *column1 = gtk_tree_view_column_new_with_attributes(COL_NAME, renderer,
-		"name", NAME_COLUMN,
+		"text", NAME_COLUMN,
 		NULL);
 	GtkTreeViewColumn *column2 = gtk_tree_view_column_new_with_attributes(COL_LETTER, renderer,
-		"letter", LETTER_COLUMN,
+		"text", LETTER_COLUMN,
 		NULL);
 	GtkTreeViewColumn *column3 = gtk_tree_view_column_new_with_attributes(COL_TOTAL, renderer,
-		"totalSpace", TOTAL_SPACE_COLUMN,
+		"text", TOTAL_SPACE_COLUMN,
 		NULL);
 	GtkTreeViewColumn *column4 = gtk_tree_view_column_new_with_attributes(COL_FREE, renderer,
-		"freeSpace", FREE_SPACE_COLUMN,
+		"text", FREE_SPACE_COLUMN,
 		NULL);
 	GtkTreeViewColumn *column5 = gtk_tree_view_column_new_with_attributes(COL_BUSY, renderer,
-		"busySpace", BUSY_SPACE_COLUMN,
+		"text", BUSY_SPACE_COLUMN,
 		NULL);
 	setWidgetProps(window, column1, column2, column3, column4, column5);
 	/* Add the column to the view. */
@@ -123,4 +121,23 @@ HWND GtkGUI::getHwndFromWindow(GtkWidget *w)
 {
 	GdkWindow *window = gtk_widget_get_window(w);
 	return reinterpret_cast<HWND>(GDK_WINDOW_HWND(window));
+}
+
+void GtkGUI::refreshTreeStore(GtkTreeStore *treeStore)
+{
+	USBEnumerator enumerator;
+	GtkListStore *liststore;
+	GtkTreeIter   iter;
+
+	vector <USBDevice> devices = enumerator.getVectorOfDevices();
+	for (int i = 0; i < devices.size(); i++)
+	{
+		gtk_tree_store_insert_with_values(treeStore, &iter, NULL, 0,
+			NAME_COLUMN, devices.at(i).getName().c_str(), 
+			LETTER_COLUMN, devices.at(i).getSymbPath().c_str(),
+			TOTAL_SPACE_COLUMN, devices.at(i).getTotalSpace(),
+			FREE_SPACE_COLUMN, devices.at(i).getFreeSpace(),
+			BUSY_SPACE_COLUMN, devices.at(i).getBusySpace());
+	}
+	
 }

@@ -2,6 +2,9 @@
 #include <gtk\gtk.h>
 #include <gdk\gdkwin32.h>
 #include <Windows.h>
+#include <vector>
+#include "USBEnumerator.h"
+#include "USBDevice.h"
 #define MAIN_WINDOW_TITLE "USB Info"
 #define MAIN_WINDOW_HEIGHT 300
 #define MAIN_WINDOWS_WIDTH 550
@@ -15,6 +18,7 @@
 #define COL_TOTAL "Total, MB"
 #define COL_FREE "Free, MB"
 #define COL_BUSY "Busy, MB"
+using namespace std;
 
 enum
 {
@@ -32,12 +36,12 @@ private:
 	static WNDPROC OldWinProc;
 	GtkApplication *app;
 	GtkWidget *tree;
-	GtkTreeStore *treeStore;
 	static void activate(GtkApplication* app, gpointer user_data);
 	static void setWidgetProps(GtkWidget *w, GtkTreeViewColumn *c1, GtkTreeViewColumn *c2, GtkTreeViewColumn *c3, GtkTreeViewColumn *c4, GtkTreeViewColumn *c5);
 	static void changeWndProc(HWND hWnd);
 	static LONG CALLBACK MyWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	static HWND GtkGUI::getHwndFromWindow(GtkWidget *w);
+	static HWND getHwndFromWindow(GtkWidget *w);
+	static void refreshTreeStore(GtkTreeStore *treeStore);
 public:
 	GtkGUI();
 	int startApp(int argc, char *argv[]);
