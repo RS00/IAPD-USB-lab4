@@ -23,9 +23,9 @@ void GtkGUI::activate(GtkApplication* app, gpointer user_data)
 	GtkTreeStore *treeStore = gtk_tree_store_new(N_COLUMNS,
 		G_TYPE_STRING,
 		G_TYPE_STRING,
-		G_TYPE_INT64,
-		G_TYPE_INT64,
-		G_TYPE_INT64);
+		G_TYPE_DOUBLE,
+		G_TYPE_DOUBLE,
+		G_TYPE_DOUBLE);
 
 	refreshTreeStore(treeStore);
 	GtkWidget *tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(treeStore));
@@ -107,7 +107,7 @@ LONG CALLBACK GtkGUI::MyWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 	{
 		case WM_DEVICECHANGE:
 		{
-			;
+			//refreshTreeStore(treeStore);
 		}
 
 	default:

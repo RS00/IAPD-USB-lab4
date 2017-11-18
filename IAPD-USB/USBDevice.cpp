@@ -1,11 +1,14 @@
 #include "USBDevice.h"
 
 
-USBDevice::USBDevice(string name, string path, string symbPath)
+USBDevice::USBDevice(string name, string path, string symbPath, long long total, long long free, long long busy)
 {
 	this->name = name;
 	this->path = path;
 	this->symbPath = symbPath;
+	this->totalSpace = total;
+	this->freeSpace = free;
+	this->busySpace = busy;
 }
 
 
@@ -23,17 +26,17 @@ string USBDevice::getSymbPath()
 	return this->symbPath;
 }
 
-long long USBDevice::getTotalSpace()
+double USBDevice::getTotalSpace()
 {
-	return this->totalSpace;
+	return (double)this->totalSpace / 1000000;
 }
 
-long long USBDevice::getFreeSpace()
+double USBDevice::getFreeSpace()
 {
-	return this->freeSpace;
+	return (double)this->freeSpace / 1000000;
 }
 
-long long USBDevice::getBusySpace()
+double USBDevice::getBusySpace()
 {
-	return this->busySpace;
+	return (double)this->busySpace / 1000000;
 }

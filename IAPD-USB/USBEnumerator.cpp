@@ -27,7 +27,9 @@ void USBEnumerator::getVolumeAndLetter(PSP_DEVICE_INTERFACE_DETAIL_DATA_A pDevic
 			{
 				string path(pDeviceInterfaceDetailData->DevicePath), symbPath(letter);
 				string nameOfDevice = getNameOfVolume(volume);
-				USBDevice device(nameOfDevice, path, symbPath);
+				long long total, free, busy;
+				this->getVolumeSize(path.c_str(), &free, &total, &busy);
+				USBDevice device(nameOfDevice, path, symbPath, total, free, busy);
 				vectorOfDevices->push_back(device);
 			}
 		}
@@ -94,4 +96,18 @@ string USBEnumerator::getNameOfVolume(string volName)
 	while (!GetVolumeInformationA(volName.c_str(), nameBuffer, sizeof(nameBuffer),
 		&number, &length, &fileSF, sysNameBuffer, sizeof(sysNameBuffer)));
 	return string(nameBuffer);
+}
+
+void USBEnumerator::getVolumeSize(const char * name, long long int *free, long long int *total, long long int *busy)
+{
+	long long FreeBytesAvailable;
+
+	while (!GetDiskFreeSpaceExA(
+		name, // directory name
+		(PULARGE_INTEGER)&FreeBytesAvailable, // bytes available to caller
+		(PULARGE_INTEGER)total, // bytes on disk
+		(PULARGE_INTEGER)free // free bytes on disk
+	));
+	*busy = *total - *free;
+	return;
 }

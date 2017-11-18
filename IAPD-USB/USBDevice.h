@@ -11,12 +11,12 @@ private:
 	long long freeSpace;
 	long long busySpace;
 public:
-	USBDevice(string name, string p, string sp);
+	USBDevice(string name, string p, string sp, long long total, long long free, long long busy);
 	string getName();
 	string getSymbPath();
-	long long getTotalSpace();
-	long long getFreeSpace();
-	long long getBusySpace();
+	double getTotalSpace();
+	double getFreeSpace();
+	double getBusySpace();
 	~USBDevice();
 };
 
