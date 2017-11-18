@@ -11,8 +11,8 @@ using namespace std;
 class USBEnumerator
 {
 private:
-	void getVolumeAndLetter(PSP_DEVICE_INTERFACE_DETAIL_DATA_A pDeviceInterfaceDetailData, vector<USBDevice> vectorOfDevices);
-	wstring getNameOfVolume(string name);
+	void getVolumeAndLetter(PSP_DEVICE_INTERFACE_DETAIL_DATA_A pDeviceInterfaceDetailData, vector<USBDevice> *vectorOfDevices);
+	string getNameOfVolume(string name);
 public:
 	USBEnumerator();
 	~USBEnumerator();

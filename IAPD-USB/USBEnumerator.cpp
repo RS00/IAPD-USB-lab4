@@ -11,7 +11,7 @@ USBEnumerator::~USBEnumerator()
 }
 
 
-void USBEnumerator::getVolumeAndLetter(PSP_DEVICE_INTERFACE_DETAIL_DATA_A pDeviceInterfaceDetailData, vector<USBDevice> vectorOfDevices)
+void USBEnumerator::getVolumeAndLetter(PSP_DEVICE_INTERFACE_DETAIL_DATA_A pDeviceInterfaceDetailData, vector<USBDevice> *vectorOfDevices)
 {
 	DWORD requiredLength = 0;
 	if (strstr(pDeviceInterfaceDetailData->DevicePath, "usbstor"))
@@ -26,9 +26,9 @@ void USBEnumerator::getVolumeAndLetter(PSP_DEVICE_INTERFACE_DETAIL_DATA_A pDevic
 			if (GetVolumePathNamesForVolumeNameA(volume, letter, 255, &requiredLength))
 			{
 				string path(pDeviceInterfaceDetailData->DevicePath), symbPath(letter);
-				wstring nameOfDevice = getNameOfVolume(volume);
-				USBDevice device(nameOfDevice, wstring(path.begin(), path.end()), wstring(symbPath.begin(), symbPath.end()));
-				vectorOfDevices.push_back(device);
+				string nameOfDevice = getNameOfVolume(volume);
+				USBDevice device(nameOfDevice, path, symbPath);
+				vectorOfDevices->push_back(device);
 			}
 		}
 	}
@@ -76,14 +76,14 @@ vector<USBDevice> USBEnumerator::getVectorOfDevices()
 			}
 		}
 
-		getVolumeAndLetter(pDeviceInterfaceDetailData, vectorOfDevices);
+		getVolumeAndLetter(pDeviceInterfaceDetailData, &vectorOfDevices);
 		LocalFree(pDeviceInterfaceDetailData);
 		pDeviceInterfaceDetailData = NULL;
 	}
 	return vectorOfDevices;
 }
 
-wstring USBEnumerator::getNameOfVolume(string volName)
+string USBEnumerator::getNameOfVolume(string volName)
 {
 	char nameBuffer[BUFFER_SIZE];
 	char sysNameBuffer[BUFFER_SIZE];
@@ -93,6 +93,5 @@ wstring USBEnumerator::getNameOfVolume(string volName)
 
 	while (!GetVolumeInformationA(volName.c_str(), nameBuffer, sizeof(nameBuffer),
 		&number, &length, &fileSF, sysNameBuffer, sizeof(sysNameBuffer)));
-	string name(nameBuffer);
-	return wstring(name.begin(), name.end());
+	return string(nameBuffer);
 }

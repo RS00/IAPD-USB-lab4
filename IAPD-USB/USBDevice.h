@@ -4,13 +4,19 @@ using namespace std;
 class USBDevice
 {
 private:
-	wstring name;
-	wstring path;
-	wstring symbPath;
+	string name;
+	string path;
+	string symbPath;
 	long long totalSpace;
 	long long freeSpace;
+	long long busySpace;
 public:
-	USBDevice(wstring name, wstring p, wstring sp);
+	USBDevice(string name, string p, string sp);
+	string getName();
+	string getSymbPath();
+	long long getTotalSpace();
+	long long getFreeSpace();
+	long long getBusySpace();
 	~USBDevice();
 };
 

@@ -1,7 +1,7 @@
 #include "USBDevice.h"
 
 
-USBDevice::USBDevice(wstring name, wstring path, wstring symbPath)
+USBDevice::USBDevice(string name, string path, string symbPath)
 {
 	this->name = name;
 	this->path = path;
@@ -11,4 +11,29 @@ USBDevice::USBDevice(wstring name, wstring path, wstring symbPath)
 
 USBDevice::~USBDevice()
 {
+}
+
+string USBDevice::getName()
+{
+	return this->name;
+}
+
+string USBDevice::getSymbPath()
+{
+	return this->symbPath;
+}
+
+long long USBDevice::getTotalSpace()
+{
+	return this->totalSpace;
+}
+
+long long USBDevice::getFreeSpace()
+{
+	return this->freeSpace;
+}
+
+long long USBDevice::getBusySpace()
+{
+	return this->busySpace;
 }
