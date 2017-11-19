@@ -33,13 +33,12 @@ enum
 class GtkGUI
 {
 private:
-	static WNDPROC OldWinProc;
+	static WNDPROC oldWinProc;
 	GtkApplication *app;
-	GtkWidget *tree;
 	static void activate(GtkApplication* app, gpointer user_data);
 	static void setWidgetProps(GtkWidget *w, GtkTreeViewColumn *c1, GtkTreeViewColumn *c2, GtkTreeViewColumn *c3, GtkTreeViewColumn *c4, GtkTreeViewColumn *c5);
 	static void changeWndProc(HWND hWnd);
-	static LONG CALLBACK MyWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	static LONG CALLBACK myWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static HWND getHwndFromWindow(GtkWidget *w);
 	static void refreshTreeStore(GtkTreeStore *treeStore);
 public:

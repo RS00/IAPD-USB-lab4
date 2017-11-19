@@ -1,6 +1,9 @@
 #include "GtkGUI.h"
 
-WNDPROC GtkGUI::OldWinProc = NULL;
+WNDPROC GtkGUI::oldWinProc = NULL;
+GtkWidget *tree;
+GtkWidget *window;
+GtkTreeStore *treeStore;
 
 GtkGUI::GtkGUI()
 {
@@ -17,10 +20,9 @@ GtkGUI::~GtkGUI()
 
 void GtkGUI::activate(GtkApplication* app, gpointer user_data)
 {
-	GtkWidget *window;
 	GtkTreeIter   iter;
 	USBEnumerator enumerator;
-	GtkTreeStore *treeStore = gtk_tree_store_new(N_COLUMNS,
+	treeStore = gtk_tree_store_new(N_COLUMNS,
 		G_TYPE_STRING,
 		G_TYPE_STRING,
 		G_TYPE_DOUBLE,
@@ -28,7 +30,7 @@ void GtkGUI::activate(GtkApplication* app, gpointer user_data)
 		G_TYPE_DOUBLE);
 
 	refreshTreeStore(treeStore);
-	GtkWidget *tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(treeStore));
+	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(treeStore));
 
 	window = gtk_application_window_new(app);
 	gtk_container_add(GTK_CONTAINER(window), tree);
@@ -96,22 +98,30 @@ void GtkGUI::setWidgetProps(GtkWidget *w, GtkTreeViewColumn *c1, GtkTreeViewColu
 
 void GtkGUI::changeWndProc(HWND hWnd)
 {
-	OldWinProc = (WNDPROC)GetWindowLong(hWnd, GWL_WNDPROC);
-	SetWindowLong(hWnd, GWL_WNDPROC, (LONG)(WNDPROC)MyWinProc);
+	oldWinProc = (WNDPROC)GetWindowLong(hWnd, GWL_WNDPROC);
+	SetWindowLong(hWnd, GWL_WNDPROC, (LONG)(WNDPROC)myWinProc);
 }
 
 
-LONG CALLBACK GtkGUI::MyWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LONG CALLBACK GtkGUI::myWinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
 		case WM_DEVICECHANGE:
 		{
-			//refreshTreeStore(treeStore);
+			GtkTreeIter       iter;
+			gboolean          iter_valid;
+
+			iter_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(treeStore), &iter);
+			while (iter_valid)
+			{
+				iter_valid = gtk_tree_store_remove(treeStore, &iter);
+			}
+			refreshTreeStore(treeStore);
 		}
 
 	default:
-		return CallWindowProc((WNDPROC)OldWinProc, hWnd, msg, wParam, lParam);
+		return CallWindowProc((WNDPROC)oldWinProc, hWnd, msg, wParam, lParam);
 	}
 
 	return TRUE;
@@ -126,7 +136,6 @@ HWND GtkGUI::getHwndFromWindow(GtkWidget *w)
 void GtkGUI::refreshTreeStore(GtkTreeStore *treeStore)
 {
 	USBEnumerator enumerator;
-	GtkListStore *liststore;
 	GtkTreeIter   iter;
 
 	vector <USBDevice> devices = enumerator.getVectorOfDevices();

@@ -11,7 +11,7 @@ USBEnumerator::~USBEnumerator()
 }
 
 
-void USBEnumerator::getVolumeAndLetter(PSP_DEVICE_INTERFACE_DETAIL_DATA_A pDeviceInterfaceDetailData, vector<USBDevice> *vectorOfDevices)
+void USBEnumerator::addDevicesToVector(PSP_DEVICE_INTERFACE_DETAIL_DATA_A pDeviceInterfaceDetailData, vector<USBDevice> *vectorOfDevices)
 {
 	DWORD requiredLength = 0;
 	if (strstr(pDeviceInterfaceDetailData->DevicePath, "usbstor"))
@@ -78,7 +78,7 @@ vector<USBDevice> USBEnumerator::getVectorOfDevices()
 			}
 		}
 
-		getVolumeAndLetter(pDeviceInterfaceDetailData, &vectorOfDevices);
+		addDevicesToVector(pDeviceInterfaceDetailData, &vectorOfDevices);
 		LocalFree(pDeviceInterfaceDetailData);
 		pDeviceInterfaceDetailData = NULL;
 	}
