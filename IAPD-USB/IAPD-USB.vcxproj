@@ -146,11 +146,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GtkGUI.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="USBDevice.cpp" />
     <ClCompile Include="USBEnumerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GtkGUI.h" />
     <ClInclude Include="USBDevice.h" />
     <ClInclude Include="USBEnumerator.h" />
   </ItemGroup>
