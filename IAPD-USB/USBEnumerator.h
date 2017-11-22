@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <SetupAPI.h>
 #include <vector>
+#include "WindowsPortableDevice.h"
 #define BUFFER_SIZE 255
 using namespace std;
 

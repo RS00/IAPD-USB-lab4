@@ -3,11 +3,9 @@
 #include <PortableDevice.h>
 #include <PortableDeviceTypes.h>
 #include <PortableDeviceApi.h>
-#include <wrl\client.h>
 #include <string>
 #include <vector>
 #define PATH_SIZE 128
-using namespace Microsoft::WRL;
 using namespace std;
 
 #pragma comment(lib, "PortableDeviceGuids.lib")

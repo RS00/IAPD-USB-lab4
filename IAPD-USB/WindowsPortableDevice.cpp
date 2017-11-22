@@ -56,7 +56,6 @@ PORTABLE_DEVICES* WindowsPortableDevice::getDevices()
 		}
 		wstring name;
 		getFriendlyName(&path, &name);
-
 		HRESULT hr = CoCreateInstance(CLSID_PortableDeviceValues,
 			nullptr,
 			CLSCTX_INPROC_SERVER,
@@ -257,11 +256,11 @@ bool WindowsPortableDevice::getDevicePath(int deviceIndex, wstring *path) {
 bool WindowsPortableDevice::getFriendlyName(wstring *path, wstring *str)
 {
 	DWORD length = 0;
-	HRESULT hr = deviceManager->GetDeviceFriendlyName(path->c_str(), nullptr, &length);
+	HRESULT hr = hr = deviceManager->GetDeviceDescription(path->c_str(), nullptr, &length);
 	if (FAILED(hr))
 		return FALSE;
 	WCHAR *DFrName = new WCHAR[length];
-	hr = deviceManager->GetDeviceFriendlyName(path->c_str(), DFrName, &length);
+	hr = deviceManager->GetDeviceDescription(path->c_str(), DFrName, &length);
 	*str = DFrName;
 	delete[] DFrName;
 	return TRUE;

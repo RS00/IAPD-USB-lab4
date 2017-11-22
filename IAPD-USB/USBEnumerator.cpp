@@ -77,7 +77,6 @@ vector<USBDevice> USBEnumerator::getVectorOfDevices()
 				return vectorOfDevices;
 			}
 		}
-
 		addDevicesToVector(pDeviceInterfaceDetailData, &vectorOfDevices);
 		LocalFree(pDeviceInterfaceDetailData);
 		pDeviceInterfaceDetailData = NULL;
@@ -101,13 +100,24 @@ string USBEnumerator::getNameOfVolume(string volName)
 void USBEnumerator::getVolumeSize(const char * name, long long int *free, long long int *total, long long int *busy)
 {
 	long long FreeBytesAvailable;
-
+	int count = 0;
 	while (!GetDiskFreeSpaceExA(
 		name, // directory name
 		(PULARGE_INTEGER)&FreeBytesAvailable, // bytes available to caller
 		(PULARGE_INTEGER)total, // bytes on disk
 		(PULARGE_INTEGER)free // free bytes on disk
-	));
+	))
+	{
+		count++;
+		if (count > 10000)
+		{
+			*free = 0;
+			*total = 0;
+			*busy = 0;
+			return;
+		}
+	}
+	
 	*busy = *total - *free;
 	return;
 }

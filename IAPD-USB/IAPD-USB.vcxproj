@@ -23,7 +23,8 @@
     <ProjectGuid>{0D185AF6-9322-4207-B4CD-C607A2B1B251}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>IAPDUSB</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -31,6 +32,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -89,18 +91,20 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\gtk\include\atk-1.0;C:\gtk\include\cairo;C:\gtk\include\gdk-pixbuf-2.0;C:\gtk\include\glib-2.0;C:\gtk\lib\glib-2.0\include;C:\gtk\include\gtk-3.0;C:\gtk\include\pango-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\gtk-build\gtk\Win32\release\lib;C:\gtk-build\gtk\Win32\release\bin</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -146,33 +150,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GtkGUI.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="USBDevice.cpp" />
     <ClCompile Include="USBEnumerator.cpp" />
+    <ClCompile Include="WindowsPortableDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GtkGUI.h" />
+    <ClInclude Include="MainWindow.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="USBDevice.h" />
     <ClInclude Include="USBEnumerator.h" />
+    <ClInclude Include="WindowsPortableDevice.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\atk-1.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\cairo.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\fontconfig.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gailutil.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gdk-win32-3.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gdk_pixbuf-2.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gio-2.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\glib-2.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gmodule-2.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gobject-2.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gthread-2.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gtk-win32-3.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\pango-1.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\pangocairo-1.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\pangoft2-1.0.lib" />
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\pangowin32-1.0.lib" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

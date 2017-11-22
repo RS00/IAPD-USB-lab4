@@ -24,7 +24,10 @@
     <ClCompile Include="USBDevice.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="GtkGUI.cpp">
+    <ClCompile Include="WindowsPortableDevice.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,58 +38,11 @@
     <ClInclude Include="USBDevice.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="GtkGUI.h">
+    <ClInclude Include="WindowsPortableDevice.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\atk-1.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\cairo.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\fontconfig.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gailutil.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gdk_pixbuf-2.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gdk-win32-3.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gio-2.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\glib-2.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gmodule-2.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gobject-2.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gthread-2.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\gtk-win32-3.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\pango-1.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\pangocairo-1.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\pangoft2-1.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\..\..\gtk\lib\pangowin32-1.0.lib">
-      <Filter>Файлы ресурсов</Filter>
-    </Library>
+    <ClInclude Include="MainWindow.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
