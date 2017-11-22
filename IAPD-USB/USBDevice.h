@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <Windows.h>
+
 using namespace std;
 class USBDevice
 {
@@ -17,6 +19,7 @@ public:
 	double getTotalSpace();
 	double getFreeSpace();
 	double getBusySpace();
+	static bool ejectDrive(CHAR symbPath);
 	~USBDevice();
 };
 

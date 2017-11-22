@@ -40,3 +40,32 @@ double USBDevice::getBusySpace()
 {
 	return (double)this->busySpace / 1000000;
 }
+
+bool USBDevice::ejectDrive(CHAR symbPath)
+{
+	CHAR devicepath[16];
+	strcpy_s(devicepath, "\\\\.\\?:");
+	devicepath[4] = symbPath;
+
+	DWORD dwRet = 0;
+	HANDLE hVol = CreateFileA(devicepath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+	if (hVol == INVALID_HANDLE_VALUE)
+		return false;
+
+	if (!DeviceIoControl(hVol, FSCTL_LOCK_VOLUME, 0, 0, 0, 0, &dwRet, 0))
+		return false;
+
+	if (!DeviceIoControl(hVol, FSCTL_DISMOUNT_VOLUME, 0, 0, 0, 0, &dwRet, 0))
+		return false;
+
+	DWORD dwBytesReturned;
+	PREVENT_MEDIA_REMOVAL PMRBuffer;
+
+	PMRBuffer.PreventMediaRemoval = true;
+	DeviceIoControl(hVol, IOCTL_STORAGE_MEDIA_REMOVAL, &PMRBuffer, sizeof(PREVENT_MEDIA_REMOVAL), NULL, 0, &dwBytesReturned, NULL);
+
+	bool result = DeviceIoControl(hVol, IOCTL_STORAGE_EJECT_MEDIA, 0, 0, 0, 0, &dwRet, 0);
+
+	CloseHandle(hVol);
+	return result;
+}

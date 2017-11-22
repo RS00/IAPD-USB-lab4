@@ -24,6 +24,12 @@ void MainWindow::InitializeComponent()
 	this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 	this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 	Controls->Add(list);
+
+	ejectButton = gcnew Button();
+	ejectButton->Text = BUTTON_TEXT;
+	ejectButton->Location = Point(BUTTON_X, BUTTON_Y);
+	ejectButton->Click += gcnew System::EventHandler(this, &MainWindow::Button_Click);
+	Controls->Add(ejectButton);
 	RefreshListView();
 }
 
@@ -43,6 +49,8 @@ MainWindow::MainWindow()
 void MainWindow::RefreshListView()
 {
 	USBEnumerator enumerator;
+	int selectedIndex = this->GetSelectedIndex();
+	
 	list->Items->Clear();
 	vector <USBDevice> devices = enumerator.getVectorOfDevices();
 	for (int i = 0; i < devices.size(); i++)
@@ -93,12 +101,38 @@ void MainWindow::RefreshListView()
 			storeItem->SubItems->Add(busyManaged);
 			list->Items->Add(storeItem);
 		}
-		}
-		
+	}
+	try {
+		list->Items[selectedIndex]->Selected = true;
+	}
+	catch (...)
+	{
+		selectedIndex = 0;
+	}
+
 	return;
 }
 
 void MainWindow::Timer_Tick(System::Object^ Sender, EventArgs ^e)
 {
 	RefreshListView();
+}
+
+void MainWindow::Button_Click(System::Object^ Sender, EventArgs ^e)
+{
+	int selected = this->GetSelectedIndex();
+	String ^str = list->Items[selected]->SubItems[1]->Text;
+	CHAR symbPath = static_cast<char>(str[0]);
+	USBDevice::ejectDrive(symbPath);
+	int as = 1; 
+}
+
+int MainWindow::GetSelectedIndex()
+{
+	int selectedIndex = -1;
+	if (list->SelectedItems->Count > 0)
+	{
+		selectedIndex = list->Items->IndexOf(list->SelectedItems[0]);
+	}
+	return selectedIndex;
 }

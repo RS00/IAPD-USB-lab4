@@ -91,9 +91,15 @@ string USBEnumerator::getNameOfVolume(string volName)
 	DWORD number;
 	DWORD length;
 	DWORD fileSF;
+	int count = 0;
 
 	while (!GetVolumeInformationA(volName.c_str(), nameBuffer, sizeof(nameBuffer),
-		&number, &length, &fileSF, sysNameBuffer, sizeof(sysNameBuffer)));
+		&number, &length, &fileSF, sysNameBuffer, sizeof(sysNameBuffer)))
+	{
+		count++;
+		if (count > 10000)
+			break;
+	}
 	return string(nameBuffer);
 }
 
