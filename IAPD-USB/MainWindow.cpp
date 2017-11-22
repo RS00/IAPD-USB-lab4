@@ -1,7 +1,12 @@
 #include "MainWindow.h"
+using namespace IAPDUSB;
 
-void IAPDUSB::MainWindow::InitializeComponent()
+void MainWindow::InitializeComponent()
 {
+	refreshTimer = gcnew Timer;
+	refreshTimer->Interval = TIMER_TICK_TIME;
+	refreshTimer->Enabled = true;
+	refreshTimer->Tick += gcnew System::EventHandler(this, &MainWindow::Timer_Tick);
 	list = gcnew ListView;
 	list->Width = LISTVIEW_WIDTH;
 	list->Height = LISTVIEW_HEIGHT;
@@ -19,9 +24,10 @@ void IAPDUSB::MainWindow::InitializeComponent()
 	this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
 	this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 	Controls->Add(list);
+	RefreshListView();
 }
 
-IAPDUSB::MainWindow::~MainWindow()
+MainWindow::~MainWindow()
 {
 	if (components)
 	{
@@ -29,7 +35,43 @@ IAPDUSB::MainWindow::~MainWindow()
 	}
 }
 
-IAPDUSB::MainWindow::MainWindow()
+MainWindow::MainWindow()
 {
 	InitializeComponent();
+}
+
+void MainWindow::RefreshListView()
+{
+	USBEnumerator enumerator;
+	list->Items->Clear();
+	vector <USBDevice> devices = enumerator.getVectorOfDevices();
+	for (int i = 0; i < devices.size(); i++)
+	{
+		String^ name = gcnew String(devices.at(i).getName().c_str());
+		String^ letter = gcnew String(devices.at(i).getSymbPath().c_str());
+		string total = std::to_string(devices.at(i).getTotalSpace());
+		String^ totalManaged = gcnew String(total.c_str());
+		string free = std::to_string(devices.at(i).getFreeSpace());
+		String^ freeManaged = gcnew String(free.c_str());
+		string busy = std::to_string(devices.at(i).getBusySpace());
+		String^ busyManaged = gcnew String(busy.c_str());
+		ListViewItem ^item = gcnew ListViewItem(name);
+		item->SubItems->Add(letter);
+		item->SubItems->Add(totalManaged);
+		item->SubItems->Add(freeManaged);
+		item->SubItems->Add(busyManaged);
+		item->SubItems->Add("1231414");
+		list->Items->Add(item);
+	}
+	WindowsPortableDevice wpd;
+	DWORD count = wpd.getDeviceCount();
+	for (int i = 0; i < count; i++)
+	{
+	}
+	return;
+}
+
+void MainWindow::Timer_Tick(System::Object^ Sender, EventArgs ^e)
+{
+	RefreshListView();
 }

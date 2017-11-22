@@ -1,4 +1,9 @@
 #pragma once
+#include <Windows.h>
+#include "USBDevice.h"
+#include "USBEnumerator.h"
+#include "WindowsPortableDevice.h"
+#define TIMER_TICK_TIME 3000
 #define WINDOW_NAME "USB Info"
 #define WINDOW_WIDTH 500
 #define WINDOW_HEIGHT 300
@@ -27,14 +32,31 @@ namespace IAPDUSB {
 
 	public ref class MainWindow : public System::Windows::Forms::Form
 	{
-	public:
-		MainWindow(void);
-
-	protected:
-		~MainWindow();
 	private:
+		Timer ^refreshTimer;
 		ListView ^list;
 		System::ComponentModel::Container ^components;
 		void InitializeComponent(void);
+		void RefreshListView();
+		void Timer_Tick(System::Object^ Sender, EventArgs ^e);
+	public:
+		MainWindow(void);
+	protected:
+		virtual void WndProc(Message% m) override {
+			
+			switch (m.Msg)
+			{
+			case WM_DEVICECHANGE:
+			{
+				RefreshListView();
+				break;
+			}
+
+			default:
+				Form::WndProc(m);
+			}
+		}
+		~MainWindow();
+
 	};
 }
