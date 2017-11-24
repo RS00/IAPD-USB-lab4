@@ -4,7 +4,6 @@
 
 WindowsPortableDevice::WindowsPortableDevice()
 {
-	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 	deviceCount = 0;
 
 	HRESULT hr = CoCreateInstance(CLSID_PortableDeviceManager,
@@ -75,23 +74,20 @@ PORTABLE_DEVICES* WindowsPortableDevice::getDevices()
 
 		// Get root directory
 		getFileEnumerator(L"", fileEnum);
-		// or some directory
-		//path = L"o91900000";
-		//device.getFileEnumerator(path, fileEnum);
+
 		wstring files[5];
 		int received;
 		int fCount = 0;
 		while (received = fileEnum.getNextFile(files, 5)) {
 			for (int j = 0; j < received; j++) {
 				wstring name;
-				bool r = getFileName(files[j], &name);
-				pdMass[i].storName.push_back(name);
 				GUID guid;
 				getObjectType(files[j], &guid);
 				if (IsEqualGUID(guid, WPD_CONTENT_TYPE_FUNCTIONAL_OBJECT)) {
 					getFunctionalObjectCategoty(files[j], &guid);
 					if (IsEqualGUID(guid, WPD_FUNCTIONAL_CATEGORY_STORAGE)) {
-
+						bool r = getFileName(files[j], &name);
+						pdMass[i].storName.push_back(name);
 						ULONGLONG total;
 						if (getSpace(files[j], &total)) {
 							pdMass[i].total.push_back(total);
@@ -141,15 +137,16 @@ bool WindowsPortableDevice::getFileGUIDParam(const std::wstring &path, GUID *gui
 	HRESULT hr = keys->Add(key);
 
 	hr = properties->GetValues(path.c_str(), keys, &objectProperties);
-	if (FAILED(hr)) goto error;
+	if (FAILED(hr))
+		if (objectProperties)
+			objectProperties->Release();
 
 	hr = objectProperties->GetGuidValue(key, guid);
-	if (FAILED(hr)) goto error;
+	if (FAILED(hr))
+		if (objectProperties)
+			objectProperties->Release();
 
 	result = true;
-error:
-	if (objectProperties)
-		objectProperties->Release();
 	return result;
 }
 
@@ -169,18 +166,25 @@ bool WindowsPortableDevice::getFileCharParam(const std::wstring &path, std::wstr
 	createKeyCollection();
 	HRESULT hr = keys->Add(key);
 	hr = properties->GetValues(path.c_str(), keys, &objectProperties);
-	if (FAILED(hr)) goto error;
+	if (FAILED(hr))
+	{
+		if (objectProperties)
+			objectProperties->Release();
+		if (temp)
+			CoTaskMemFree(temp);
+	}
 
 	hr = objectProperties->GetStringValue(key, &temp);
-	if (FAILED(hr)) goto error;
+	if (FAILED(hr))
+	{
+		if (objectProperties)
+			objectProperties->Release();
+		if (temp)
+			CoTaskMemFree(temp);
+	}
 
 	*str = temp;
 	result = true;
-error:
-	if (objectProperties)
-		objectProperties->Release();
-	if (temp)
-		CoTaskMemFree(temp);
 	return result;
 }
 
@@ -209,15 +213,15 @@ bool WindowsPortableDevice::getFileInt8Param(const std::wstring &path, ULONGLONG
 	createKeyCollection();
 	HRESULT hr = keys->Add(key);
 	hr = properties->GetValues(path.c_str(), keys, &objectProperties);
-	if (FAILED(hr)) goto error;
-
+	if (FAILED(hr)) 
+		if (objectProperties)
+			objectProperties->Release();
 	hr = objectProperties->GetUnsignedLargeIntegerValue(key, num);
-	if (FAILED(hr)) goto error;
+	if (FAILED(hr)) 
+		if (objectProperties)
+			objectProperties->Release();
 
 	result = true;
-error:
-	if (objectProperties)
-		objectProperties->Release();
 	return result;
 }
 				
@@ -256,7 +260,7 @@ bool WindowsPortableDevice::getDevicePath(int deviceIndex, wstring *path) {
 bool WindowsPortableDevice::getFriendlyName(wstring *path, wstring *str)
 {
 	DWORD length = 0;
-	HRESULT hr = hr = deviceManager->GetDeviceDescription(path->c_str(), nullptr, &length);
+	HRESULT hr = deviceManager->GetDeviceDescription(path->c_str(), nullptr, &length);
 	if (FAILED(hr))
 		return FALSE;
 	WCHAR *DFrName = new WCHAR[length];

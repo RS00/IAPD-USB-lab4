@@ -17,6 +17,7 @@ void MainWindow::InitializeComponent()
 	list->Columns->Add(LISTVIEW_COL4, LISTVIEW_COL4_WIDTH, HorizontalAlignment::Left);
 	list->Columns->Add(LISTVIEW_COL5, LISTVIEW_COL5_WIDTH, HorizontalAlignment::Left);
 	list->Location = Point(LISTVIEW_X, LISTVIEW_Y);
+	list->SelectedIndexChanged += gcnew System::EventHandler(this, &MainWindow::Selected_Changed);
 	this->components = gcnew System::ComponentModel::Container();
 	this->Size = System::Drawing::Size(WINDOW_WIDTH, WINDOW_HEIGHT);
 	this->Text = WINDOW_NAME;
@@ -135,4 +136,25 @@ int MainWindow::GetSelectedIndex()
 		selectedIndex = list->Items->IndexOf(list->SelectedItems[0]);
 	}
 	return selectedIndex;
+}
+
+void MainWindow::Selected_Changed(System::Object^ Sender, EventArgs ^e)
+{
+	int index = GetSelectedIndex();
+	try
+	{
+		String ^selected = list->Items[index]->SubItems[1]->Text;
+		if (selected == "")
+		{
+			ejectButton->Enabled = false;
+			return;
+		}
+	}
+	catch (...)
+	{
+		ejectButton->Enabled = false;
+		return;
+	}
+	ejectButton->Enabled = true;
+	return;
 }

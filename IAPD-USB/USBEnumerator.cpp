@@ -93,13 +93,8 @@ string USBEnumerator::getNameOfVolume(string volName)
 	DWORD fileSF;
 	int count = 0;
 
-	while (!GetVolumeInformationA(volName.c_str(), nameBuffer, sizeof(nameBuffer),
-		&number, &length, &fileSF, sysNameBuffer, sizeof(sysNameBuffer)))
-	{
-		count++;
-		if (count > 10000)
-			break;
-	}
+	GetVolumeInformationA(volName.c_str(), nameBuffer, sizeof(nameBuffer),
+		&number, &length, &fileSF, sysNameBuffer, sizeof(sysNameBuffer));
 	return string(nameBuffer);
 }
 
@@ -107,22 +102,12 @@ void USBEnumerator::getVolumeSize(const char * name, long long int *free, long l
 {
 	long long FreeBytesAvailable;
 	int count = 0;
-	while (!GetDiskFreeSpaceExA(
+	GetDiskFreeSpaceExA(
 		name, // directory name
 		(PULARGE_INTEGER)&FreeBytesAvailable, // bytes available to caller
 		(PULARGE_INTEGER)total, // bytes on disk
 		(PULARGE_INTEGER)free // free bytes on disk
-	))
-	{
-		count++;
-		if (count > 10000)
-		{
-			*free = 0;
-			*total = 0;
-			*busy = 0;
-			return;
-		}
-	}
+	);
 	
 	*busy = *total - *free;
 	return;

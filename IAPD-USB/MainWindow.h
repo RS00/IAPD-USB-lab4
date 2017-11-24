@@ -3,7 +3,7 @@
 #include "USBDevice.h"
 #include "USBEnumerator.h"
 #include "WindowsPortableDevice.h"
-#define TIMER_TICK_TIME 5000
+#define TIMER_TICK_TIME 3000
 #define WINDOW_NAME "USB Info"
 #define WINDOW_WIDTH 500
 #define WINDOW_HEIGHT 300
@@ -45,6 +45,7 @@ namespace IAPDUSB {
 		int GetSelectedIndex();
 		void Timer_Tick(System::Object^ Sender, EventArgs ^e);
 		void Button_Click(System::Object^ Sender, EventArgs ^e);
+		void Selected_Changed(System::Object^ Sender, EventArgs ^e);
 	public:
 		MainWindow(void);
 	protected:
@@ -54,7 +55,7 @@ namespace IAPDUSB {
 			{
 			case WM_DEVICECHANGE:
 			{
-				//RefreshListView();
+				RefreshListView();
 				break;
 			}
 
